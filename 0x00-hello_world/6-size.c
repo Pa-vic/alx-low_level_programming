@@ -1,4 +1,4 @@
-#include <stdio.hd>
+#include <stdio.h>
 /**
  * main - prints the size of various types on the computer
  * Return: 0 (Success)
