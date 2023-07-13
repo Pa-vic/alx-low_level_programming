@@ -11,10 +11,10 @@
  */
 void _is_zero(char *argv[])
 {
-	int i, isn1 = 1, isn2 = 1;
+	int j, i, isn1 = 1, isn2 = 1;
 
-	for (i = 0; argv[1][i]; i++)
-		if (argv[1][i] != '0')
+	for (j = 0; argv[1][j]; j++)
+		if (argv[1][j] != '0')
 		{
 			isn1 = 0;
 			break;
