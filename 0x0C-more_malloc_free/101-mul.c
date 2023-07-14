@@ -1,96 +1,126 @@
 #include "main.h"
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <ctype.h>
 
 /**
- * check_digits - Checks if a string consists only of digits.
- * @str: The string to be checked.
+ * _is_zero - determines if any number is zero
+ * @argv: argument vector.
  *
- * Return: 1 if the string consists only of digits, 0 otherwise.
+ * Return: no return.
  */
-int check_digits(const char *str)
+void _is_zero(char *argv[])
 {
-    while (*str)
-    {
-        if (!isdigit(*str))
-            return 0;
-        str++;
-    }
-    return 1;
+	int j, i, num1 = 1, num2 = 1;
+
+	for (j = 0; argv[1][j]; j++)
+		if (argv[1][j] != '0')
+		{
+			num1 = 0;
+			break;
+		}
+
+	for (i = 0; argv[2][i]; i++)
+		if (argv[2][i] != '0')
+		{
+			num2 = 0;
+			break;
+		}
+
+	if (num1 == 1 || num2 == 1)
+	{
+		printf("0\n");
+		exit(0);
+	}
 }
 
 /**
- * multiply - Multiplies two positive numbers.
- * @num1: The first number.
- * @num2: The second number.
+ * _initialize_array - set memery to zero in a new array
+ * @ar: char array.
+ * @lar: length of the char array.
  *
- * Return: A dynamically allocated string containing the product of num1 and num2.
+ * Return: pointer of a char array.
  */
-char *multiply(const char *num1, const char *num2)
+char *_initialize_array(char *ar, int lar)
 {
-    int len1 = 0, len2 = 0, len = 0, carry = 0, i, j, k;
-    char *result;
+	int i = 0;
 
-    while (num1[len1])
-        len1++;
-    while (num2[len2])
-        len2++;
-    
-    len = len1 + len2;
-    result = malloc(sizeof(char) * (len + 1));
-    if (result == NULL)
-    {
-        printf("Memory allocation failed.\n");
-        exit(1);
-    }
-
-    for (i = len - 1; i >= 0; i--)
-    {
-        result[i] = carry;
-        carry = 0;
-        k = i;
-
-        for (j = len2 - 1; j >= 0; j--, k--)
-        {
-            if (k < len1)
-                result[i] += (num1[k] - '0') * (num2[j] - '0');
-            
-            if (result[i] > 9)
-            {
-                carry = result[i] / 10;
-                result[i] %= 10;
-            }
-        }
-    }
-
-    if (carry != 0)
-        printf("Warning: Overflow occurred during multiplication.\n");
-
-    result[len] = '\0';
-    return result;
+	for (i = 0; i < lar; i++)
+		ar[i] = '0';
+	ar[lar] = '\0';
+	return (ar);
 }
 
+/**
+ * _checknum - determines length of the number
+ * and checks if number is in base 10.
+ * @argv: arguments vector.
+ * @n: row of the array.
+ *
+ * Return: length of the number.
+ */
+int _checknum(char *argv[], int n)
+{
+	int ln;
+
+	for (ln = 0; argv[n][ln]; ln++)
+		if (!isdigit(argv[n][ln]))
+		{
+			printf("Error\n");
+			exit(98);
+		}
+
+	return (ln);
+}
+
+/**
+ * main - Entry point.
+ * program that multiplies two positive numbers.
+ * @argc: number of arguments.
+ * @argv: arguments vector.
+ *
+ * Return: 0 - success.
+ */
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
-    {
-        printf("Error\n");
-        return 98;
-    }
+	int num1, num2, lnout, mul, addl, i, j, k, ca;
+	char *nout;
 
-    if (!check_digits(argv[1]) || !check_digits(argv[2]))
-    {
-        printf("Error\n");
-        return 98;
-    }
-
-    char *num1 = argv[1];
-    char *num2 = argv[2];
-    char *product = multiply(num1, num2);
-    printf("%s\n", product);
-    free(product);
-
-    return 0;
+	if (argc != 3)
+		printf("Error\n"), exit(98);
+	num1 = _checknum(argv, 1), num2 = _checknum(argv, 2);
+	_is_zero(argv), lnout = num1 + num2, nout = malloc(lnout + 1);
+	if (nout == NULL)
+		printf("Error\n"), exit(98);
+	nout = _initialize_array(nout, lnout);
+	k = lnout - 1, i = num1 - 1, j = num2 - 1, ca = addl = 0;
+	for (; k >= 0; k--, i--)
+	{
+		if (i < 0)
+		{
+			if (addl > 0)
+			{
+				mul = (nout[k] - '0') + addl;
+				if (mul > 9)
+					nout[k - 1] = (mul / 10) + '0';
+				nout[k] = (mul % 10) + '0';
+			}
+			i = num1 - 1, j--, addl = 0, ca++, k = lnout - (1 + ca);
+		}
+		if (j < 0)
+		{
+			if (nout[0] != '0')
+				break;
+			lnout--;
+			free(nout), nout = malloc(lnout + 1), nout = _initialize_array(nout, lnout);
+			k = lnout - 1, i = num1 - 1, j = num2 - 1, ca = addl = 0;
+		}
+		if (j >= 0)
+		{
+			mul = ((argv[1][i] - '0') * (argv[2][j] - '0')) + (nout[k] - '0') + addl;
+			addl = mul / 10, nout[k] = (mul % 10) + '0';
+		}
+	}
+	printf("%s\n", nout);
+	return (0);
 }
-
